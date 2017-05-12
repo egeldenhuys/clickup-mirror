@@ -26,7 +26,7 @@ TYPE_DOCUMENT = 'resource/x-bb-document'
 
 YEAR = 2017
 
-VERSION = 'v1.0.1'
+VERSION = 'v1.0.2'
 
 def main():
     parser = argparse.ArgumentParser(description='Create a file mirror from ClickUP')
