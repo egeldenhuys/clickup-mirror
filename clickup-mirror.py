@@ -80,7 +80,7 @@ def main():
 def saveDataFile(filePath, data):
     if not os.path.exists(os.path.dirname(filePath)):
         try:
-            os.makedirs(os.path.dirname(filename))
+            os.makedirs(os.path.dirname(filePath))
         except OSError as exc:
             if exc.errno != errno.EEXIST:
                 raise
