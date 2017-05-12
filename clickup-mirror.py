@@ -66,8 +66,8 @@ def main():
         print("Please log into ClickUP using " + args.browser)
         exit(1)
 
-    if os.path.isfile(args.data_file):
-        data = loadDataFile(args.data_file)
+    if os.path.isfile(dataFile):
+        data = loadDataFile(dataFile)
     else:
         data = getStructure(s_session_id)
         saveDataFile(args.data_file, data)
