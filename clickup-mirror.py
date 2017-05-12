@@ -26,7 +26,7 @@ TYPE_DOCUMENT = 'resource/x-bb-document'
 
 YEAR = 2017
 
-VERSION = 'v1.0.0'
+VERSION = 'v1.0.1'
 
 def main():
     parser = argparse.ArgumentParser(description='Create a file mirror from ClickUP')
@@ -43,6 +43,10 @@ def main():
 
     fileTypes = args.file_types.split(',')
     rootFolder = expanduser(args.outpur_dir)
+
+    if not os.path.exists(rootFolder):
+        os.makedirs(rootFolder)
+
     dataFile = args.data_file
 
     if args.data_file == 'mirror/database.json':
@@ -74,14 +78,25 @@ def main():
         downloadData(s_session_id, data, rootFolder, fileTypes)
 
 def saveDataFile(filePath, data):
+    if not os.path.exists(os.path.dirname(filePath)):
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except OSError as exc:
+            if exc.errno != errno.EEXIST:
+                raise
+
     f = open(filePath, 'w')
     json.dump(data, f)
     f.close()
 
 def loadDataFile(filePath):
-    f = open(filePath, 'r')
-    data = json.load(f)
-    f.close()
+
+    data = []
+
+    if os.path.isfile(filePath):
+        f = open(filePath, 'r')
+        data = json.load(f)
+        f.close()
 
     return data
 
