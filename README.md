@@ -1,10 +1,19 @@
 # clickup-mirror
+[![GitHub release](https://img.shields.io/github/release/egeldenhuys/clickup-mirror.svg)](https://github.com/egeldenhuys/clickup-mirror/releases)
 
 Create a file mirror from ClickUP
 
 ## Dependencies
-- [Requests](http://docs.python-requests.org/en/master/)
+- [Requests](https://github.com/kennethreitz/requests)
     - `pip install requests`
+- [browser-cookie3](https://github.com/borisbabic/browser_cookie3)
+    - `pip install browser_cookie3`
+- python3
+
+## Install
+```
+git clone https://github.com/egeldenhuys/clickup-mirror
+```
 
 ## Usage
 
@@ -64,15 +73,13 @@ python3 mirror.py --brower chrome --output-directory ~/ClickUp/ --file-types pdf
 ```
 ├── INL 240 S1 2017
 │   ├── Practical Content
+│   │   ├── Class activity 2
+│   │   │   └── Class activity 2.docx
+│   │   ├── Group Project marks
+│   │   │   └── INL 240 Group project marks.pdf
 │   │   ├── INL240_Howtowriteanabstract_2016.pdf
 │   │   ├── INL 240 Practical Portfolio
+│   │   │   ├── Practical Portfolio_2017.docx
 │   │   │   └── Practical Portfolio_2017.pdf
-│   │   └── IntroductiontoWriting_2016_1.pdf
-│   ├── Study Guide and Schedules
-│   │   ├── INL240Schedule2017_v2.pdf
-│   │   └── INL240_StudyGuide_2017.pdf
-│   └── Theory Content
-│       ├── INL240_IntroductoryLecture_2017_FINAL.pdf
-│       └── Theme 1 - Foundational Concepts in Information Ethics
-│           └── Theme 1 (part1)(1).pdf
+│   │   ├── IntroductiontoWriting_2016_1.pdf
 ```

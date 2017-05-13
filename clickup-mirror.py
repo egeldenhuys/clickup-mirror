@@ -26,7 +26,7 @@ TYPE_DOCUMENT = 'resource/x-bb-document'
 
 YEAR = 2017
 
-VERSION = 'v1.0.2'
+VERSION = 'v1.0.4'
 
 def main():
     parser = argparse.ArgumentParser(description='Create a file mirror from ClickUP')
@@ -103,7 +103,7 @@ def loadDataFile(filePath):
 def getCookie(browser):
 
     cj = {}
-    s_session_id = -1;
+    s_session_id = '';
 
     if browser == BROWSER_CHROMIUM:
         cj = browser_cookie3.chrome(expanduser('~/.config/chromium/Default/Cookies'))
