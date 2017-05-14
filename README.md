@@ -21,7 +21,8 @@ Log into ClickUP using Chrome or Firefox before running the script.
 
 ```
 usage: clickup-mirror.py [-h] [-b BROWSER] [-o OUTPUR_DIR] [-t FILE_TYPES]
-                         [-d DATA_FILE] [-n] [--version]
+                         [-d DATA_FILE] [-u] [-s SESSION_FILE] [-n]
+                         [--version]
 
 Create a file mirror from ClickUP
 
@@ -35,14 +36,19 @@ optional arguments:
                         mirror/]
   -t FILE_TYPES, --file-types FILE_TYPES
                         Comma-separated list of file types to download
-                        [default: pdf]
+                        [default: all]
   -d DATA_FILE, --data-file DATA_FILE
                         File to be used for the database cache. Will be
                         created if it does not exist [default:
                         mirror/database.json]
+  -u, --update-database
+                        Overwrite the database file
+  -s SESSION_FILE, --session-file SESSION_FILE
+                        File containing the s_session_id
   -n, --dry-run         Only generate the database file. Do not download
                         anything [default: False]
   --version             show program's version number and exit
+
 
 BROWSER_TYPE:
     chromium
@@ -50,6 +56,7 @@ BROWSER_TYPE:
     firefox
 
 COMMON FILE TYPES:
+    all
     pdf
     doc
     docx
