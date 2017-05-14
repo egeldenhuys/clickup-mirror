@@ -24,24 +24,34 @@ TYPE_FOLDER = 'resource/x-bb-folder'
 TYPE_FILE = 'resource/x-bb-file'
 TYPE_DOCUMENT = 'resource/x-bb-document'
 
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+
 YEAR = 2017
 
-VERSION = 'v1.0.4'
+VERSION = 'v1.1.0'
 
 def main():
     parser = argparse.ArgumentParser(description='Create a file mirror from ClickUP')
     parser.add_argument('-b', '--browser', help='The browser to be used for authentication [default: chromium]', required=False, type=str, default='chromium')
     parser.add_argument('-o', '--outpur-dir', help='The directory to create the mirror in [default: mirror/]', required=False, type=str, default='mirror/')
-    parser.add_argument('-t', '--file-types', help='Comma-separated list of file types to download [default: pdf]', required=False, type=str, default='pdf')
+    parser.add_argument('-t', '--file-types', help='Comma-separated list of file types to download [default: all]', required=False, type=str, default='all')
     parser.add_argument('-d', '--data-file', help='File to be used for the database cache. \
     Will be created if it does not exist [default: mirror/database.json]', required=False, type=str, default='mirror/database.json')
+    parser.add_argument('-u', '--update-database', help='Overwrite the database file', required=False, default=False, action='store_true')
+    parser.add_argument('-s', '--session-file', help='File containing the s_session_id', required=False, type=str)
     #parser.add_argument('-f', '--force-overwrite', help='Overwrite existing files in the mirror directroy [default: False]', required=False, action='store_true', default=False)
     parser.add_argument('-n', '--dry-run', help='Only generate the database file. Do not download anything [default: False]', required=False, action='store_true', default=False)
     parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
 
-    args = parser.parse_args()
+    args, unk = parser.parse_known_args()
 
     fileTypes = args.file_types.split(',')
+    allTypes = ['pdf', 'doc', 'docx', 'xlsx', 'sql', 'txt', 'reg', 'pptx', 'ods']
+
+    if 'all' in fileTypes:
+        fileTypes += allTypes
+        fileTypes.remove('all')
+
     rootFolder = expanduser(args.outpur_dir)
 
     if not os.path.exists(rootFolder):
@@ -55,22 +65,33 @@ def main():
     print('File types: ' + str(fileTypes))
     print('Mirror directory: ' + rootFolder)
     print('Database file: ' + dataFile)
+    print('Browser: ' + args.browser)
 
     if args.dry_run:
         print('DRY RUN...')
 
-    print('Fetching Session Token from ' + args.browser)
-    s_session_id = getCookie(args.browser)
+    if args.session_file:
+        print('Loading s_session_id from file ' + args.session_file)
+        f = open(args.session_file, 'r')
+        s_session_id = f.readline().strip()
+        f.close()
 
-    if not isLoggedIn(s_session_id):
-        print("Please log into ClickUP using " + args.browser)
-        exit(1)
+        if not isLoggedIn(s_session_id):
+            print('Invalid s_session_id provided in file')
+            exit(1)
+    else:
+        print('Fetching Session Token from ' + args.browser)
+        s_session_id = getCookie(args.browser)
 
-    if os.path.isfile(dataFile):
+        if not isLoggedIn(s_session_id):
+            print("Please log into ClickUP using " + args.browser)
+            exit(1)
+
+    if os.path.isfile(dataFile) and not args.update_database:
         data = loadDataFile(dataFile)
     else:
         data = getStructure(s_session_id)
-        saveDataFile(args.data_file, data)
+        saveDataFile(dataFile, data)
 
     printData(data)
 
@@ -123,7 +144,7 @@ def getCookie(browser):
     return s_session_id;
 
 def getResponse(s_session_id, method, url):
-    headers = {'Cookie': 's_session_id=' + s_session_id, 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36'}
+    headers = {'Cookie': 's_session_id=' + s_session_id, 'User-Agent': USER_AGENT}
 
     r = requests.request(method, url, headers=headers, allow_redirects=False)
     return r
@@ -134,6 +155,15 @@ def isLoggedIn(s_session_id):
     if (r.status_code == 200):
         return True
     else:
+        print("[Error] Could not authenticate")
+        print('s_session_id = ' + s_session_id)
+        print("Request Headers: ")
+        print(r.request.headers)
+
+
+        print("\n\nResponse Headers: ")
+        print(r.headers)
+
         return False
 
 def getUID(s_session_id):
