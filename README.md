@@ -1,4 +1,10 @@
 # clickup-mirror
+
+
+## This script no longer works and will not be fixed in the future!
+
+----
+
 [![GitHub release](https://img.shields.io/github/release/egeldenhuys/clickup-mirror.svg)](https://github.com/egeldenhuys/clickup-mirror/releases)
 
 Create a file mirror from ClickUP
